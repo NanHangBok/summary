@@ -6,21 +6,21 @@
 ## 내용 별 정리
 
 - [GIT 사용] 1일차
-- [객체지향 프로그래밍](#./Part_1/2_WEEK) 2일차-4일차
-- [람다식](#./Part_1/2_WEEK) 5일차
-- [STREAM](#./Part_1/2_WEEK) 5일차
+- [객체지향 프로그래밍](#./Part_1/2_WEEK/) 2일차-4일차
+- [람다식](#./Part_1/2_WEEK/) 5일차
+- [STREAM](#./Part_1/2_WEEK/) 5일차
 
 ---
 
 ## 날짜 별 정리
-- [4일차](#./Part_1/2_WEEK/DAY_4(Tue))
+- [4일차](#./Part_1/2_WEEK/DAY_4(Tue)/)
   - 4대 핵심 개념 복습 ( 상속, 캡슐화, 다형성, 추상화 )
   - SOLID 원칙
   - 내부/익명 클래스
   - JCF/Java Collection Framework
   - 람다표현식 조금
 
-- [5일차](#./Part_1/2_WEEK/DAY_5(Wed))
+- [5일차](#./Part_1/2_WEEK/DAY_5(Wed)/)
   - 람다식
     - 축약문법
     - 변수캡처
