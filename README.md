@@ -12,7 +12,7 @@
 ---
 
 ## 날짜 별 정리
-- [4일차](#./Part_1/2_WEEK))
+- [4일차](#./Part_1/2_WEEK)
   - SOLID 원칙
   - 내부/익명 클래스
   - JCF/Java Collection Framework
