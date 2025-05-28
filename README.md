@@ -1,5 +1,21 @@
-# summary
-## CODEIT SPRINT BACK-END SPRING 4기 내용 정리
+# CODEIT SPRINT BACK-END SPRING 4기 내용 정리
+
+- [내용별정리](#내용-별-정리)
+- [날짜별정리](#날짜-별-정리)
+
+## 내용 별 정리
 
 - [GIT 사용] 1일차
 - [객체지향 프로그래밍] 2일차-4일차
+
+
+---
+
+## 날짜 별 정리
+- [4일차](#https://github.com/NanHangBok/summary/tree/main/Part_1/2_WEEK/DAY_4(Tue))
+  - SOLID 원칙
+  - 내부/익명 클래스
+  - JCF/Java Collection Framework
+  - 람다표현식 조금
+
+- [5일차]
