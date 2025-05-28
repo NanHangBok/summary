@@ -13,6 +13,7 @@
 
 ## 날짜 별 정리
 - [4일차](#./Part_1/2_WEEK)
+  - 4대 핵심 개념 복습 ( 상속, 캡슐화, 다형성, 추상화 )
   - SOLID 원칙
   - 내부/익명 클래스
   - JCF/Java Collection Framework
