@@ -1,6 +1,7 @@
 # DAY_5
 
 - [람다식](#람다식)
+- [STREAM](#STREAM)
 
 ## 람다식
 ```
@@ -123,9 +124,94 @@ List, Set, Map, 배열 등 다양한 데이터 소스로부터 스트림을 만�
   - 스트림 처리과정 (생성 -> 중간 연산 -> 최종 연산 ) 3단계의 파이프라인으로 구성
   - 스트림은 원본 데이터 소스를 변경하지 않음 (READ ONLY)
   - 스트림은 일회용 (Onetime-Only)
-  - 스트림은 내부 반복자
+  - 스트림은 내부 반복자 / 순회과정이 개발자에게 보이지 않음
  
 - 스트림 파이프라인
   - 생성 / stream으로 변환
   - 중간 연산 / 0번 이상 가능
   - 최종 연산 / 단 한번만 가능
+
+- 배열 기반 스트림
+  - Arrays.stream()
+  - Stream.of()
+
+- 컬렉션 기반 스트림
+  - 컬렉션.stream() / List.stream(), Set.stream()...
+
+- IntStream
+  - IntStream.range(1,10) / 1~9
+  - IntStream.rangeClosed(1,10) / 1~10
+
+#### 중간 연산
+- .filter() , .map() 등
+- .filter() 조건에 맞는 데이터들만 정제 / 조건은 람다식으로 정의
+- .map() 원하는 필드만 추출하거나 **특정 형태로 변환할 때** / 조건은 람다식으로 정의
+- .distinct() 중복제거
+- .sorted() 정렬 / 기본 오름차순 .sorted((a,b) -> a-b)/ .sorted((s1,s2) -> s2.compareTo(s1)) 내림차순 .sorted((a,b) -> b-a)
+- flatMap() 중첩된 스트림 구조를 **평탄화, 하나의 스트림으로 펼쳐줌**
+- peek() 요소를 중간에 봄, 처리 X / **디버깅 또는 로깅용**
+- skip(),limit() n개의 요소를 건너뛰거나, 최대 n개의 요소만 남기기
+
+#### 최종 연산
+- 한개만 존재가능
+- .forEach(), .average(), .sum() ...
+- .forEach() = void 반환 -> 변수에 저장 불가 / 데이터 가공 X
+- .sum() = int 반환 -> 변수에 저장 가능
+- .collect() 스트림의 결과를 컬렉션(List,Set...)의 형태로 가공 / toList(), toSet(), toMap(), joining()
+- .collect(Collectors.joining(연결자,시작,마지막) / .collect(Collectors.joining(", ", "(", ")") -> abc->(a,b,c)
+- 조건매칭
+  - .allMatch(), .anyMatch(), .noneMatch()
+  - 모든것이, 어떤 것이든(하나라도), 맞는것이 없을 때(Match가 none(없다)
+- 단일 요소 반환
+  - .findFirst() 순서대로, .findAny() 병렬 처리 시 가장 빠른 요소
+  - Optional<T> 반환 / NPE 방지 / .orElseThrow() null일 시 강제 예외 발생
+- 배열 toArray()
+
+#### 지연 평가 (Lazy Evaluation)
+- 최종 연산 호출 전까지 실제로(런타임) 실행되지 않는다
+- 불필요한 연산을 피하고, 성능 최적화
+ 
+#### Optional Class
+**null 안정성을 위한 래퍼 클래스** <br>
+값이 존재할수도 있고, 존재하지 않을 수도 있는 컨테이너
+- of()와 ofNullable() 객체 생성 / of() null X , ofNullable() null O
+- empty() 빈 객체 생성 / Optional<T>empty();
+- isPresent() 값 존재 여부 확인 / ifPresent() 있다면 처리
+- get(), orElse() / orElse() null일때 기본 값 제공
+
+#### 그룹화
+- groupingBy() 단순 그룹
+  ```
+  System.out.println("----- groupingBy(성별) -----");
+  Map<String, List<Student>> genderGroupMap = studentList.stream()
+  		.collect(Collectors.groupingBy(Student::getGender));
+  
+  genderGroupMap.forEach((gender, students) -> {
+  	System.out.println("[ " + gender + "학생 ]");
+  	students.forEach(student -> System.out.println(student));
+  }); 
+  ```
+  - 데이터를 특정 기준으로 그룹핑
+  - Map<그룹 키, List<T>> 반환
+- groupingBy() + mapping() 그룹화 후 매핑
+  ```
+    Map<String, List<String>> genderNameMap2 = studentList.stream()
+		.collect(Collectors.groupingBy(
+				Student::getGender, // ,이후 mapping()
+				Collectors.mapping(Student::getName, Collectors.toList())
+		));
+  ```
+- partitioningBy() 조건 분할
+  - true/false 기준 2개의 그룹으로 나눔
+  - Map<Boolean, List<T>> 반환
+ 
+- 다중 레벨 그룹화 / 다중 groupingBy() 가능
+
+#### 통계 및 집계
+수를 다루면 IntStream 필요
+- sum() 스트림 내 숫자를 모두 더함
+- average() 평균값 ( 결과 OptionalDouble ) / .orElse(0) 으로 OptionalDouble 처리
+- max() 최댓값 ( 결과 OptionalInt )
+- min() 최소값 ( 결과 OptionalInt )
+- reduce() 스트림 요소들을 하나의 값으로 결합 / reduce(초기값,람다식( (a+b) -> a+b )
+- summarizingInt() count, sum, min, average, max를 한 번에 계산 (List로 값을 가지고 있음) .getSum()...
