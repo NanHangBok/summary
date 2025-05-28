@@ -245,9 +245,25 @@ map.get() 으로 없는 값을 가져올 경우 null 반환 -> *containsKey, con
 
 ## 람다 표현식
 ***메서드를 하나의 식으로 표현한것 (메서드를 다른방식(표현식)으로 변경)*** <br>
+**인터페이스 객체를 만들어 인터페이스에 정의된 메서드의 내용을 만든다** <br>
 메서드 이름과 리턴 값 없음 (익명 함수) <br>
 > 함수 이름을 빼고 -> 추가 <br>
 > void print() = { System.out.println("hello");} --> **() -> System.out.println("hello");**
+
+```
+interface Add {
+  int sum(int a, int b);
+}
+
+Add add = (a,b) -> a+b;
+add.sum(1,2);
+
+interface Print {
+  void show();
+}
+Print p = () -> System.out.println("람다식");
+p.show();
+```
 
 메서드의 파라미터로 메서드를 사용하기 위해 람다표현식 사용 / *오직 람다만 가능*
 - 반복적인 문법을 간결하게 줄일 수 있다
