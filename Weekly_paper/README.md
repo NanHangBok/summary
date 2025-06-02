@@ -1,7 +1,7 @@
 # WEEKLY_PAPER
 - [2주차](#2주차) [rebase와 merge / fetch와 pull]
-- [3주차](#3주차)
-
+- [3주차](#3주차) [단일책임원칙(SRP)와 개방-폐쇄원칙(OCP) / stream 연산자 map()과 flatMap()]
+- [4주차](#4주차)
 ## 2주차
 
 + git rebase와 git merge의 차이점을 설명하고, 각각 어떤 상황에서 사용하는 것이 적절한지 설명해주세요.
@@ -127,7 +127,9 @@
           .forEach(System.out::println);
       ```
 
+---
 
+## 4주차
 
 
 
