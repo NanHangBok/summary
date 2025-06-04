@@ -1,7 +1,7 @@
 ## DAY_10
 
 지금까지의 피드백
-
+```
 /****************************************
          *  외부에서 Factory 금지  / COMPLETE
          *  user와 userid 사용하는거 통일 시키기  / COMPLETE
@@ -20,6 +20,7 @@
          *  channel과 유저에서 addMessage와 removeMessage를 메세지와 상호 보완적으로 수정  / COMPLETE
          *  updateUser 몇 개의 인자가 오든 대응 가능하게 수정 / COMPLETE
 ****************************************/
+```
 
 ### 회고
 #### 회고-1 (순환참조 NullPointExcpetion)
