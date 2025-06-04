@@ -22,7 +22,7 @@
 ****************************************/
 
 ### 회고
-##### 1
+#### 회고-1 (순환참조 NullPointExcpetion)
 채널 삭제 시 - 메시지 리포지토리에서 채널에서 작성된 메시지를 삭제해야 하기 때문에 메시지 서비스 참조가 필요 <br>
 유저 삭제 시 - 메시지 리포지토리에서 유저가 작성한 메시지를 삭제해야 하기 때문에 메시지 서비스의 참조가 필요 <br>
 
@@ -38,7 +38,7 @@ this.jcfMessageService is null이라며 NPE가 발생 <br>
 >> MessageService는 UserService와 ChannelService를 참조하지 않고
 >> UserService와 ChannelService는 MessageService를 참조하도록 변경
 
-##### 2
+#### 회고-2 (스트림 ConcurentModificationException)
 '''
 public void removeChannel(Channel channel) {
         if(channels.contains(channel)) {
