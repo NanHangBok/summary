@@ -39,18 +39,18 @@ this.jcfMessageService is null이라며 NPE가 발생 <br>
 >> UserService와 ChannelService는 MessageService를 참조하도록 변경
 
 #### 회고-2 (스트림 ConcurentModificationException)
-'''
+```
 public void removeChannel(Channel channel) {
         if(channels.contains(channel)) {
             channels.remove(channel);
             channel.removeUser(this);
         }
     }
-로
+
 .forEach(user -> user.removeChannel(channel));
-이거로 하면 concurentModificationException이 발생
-.forEach(user -> user.getChannels().remove(channel))로 수정
-'''
+//  이거로 하면 concurentModificationException이 발생
+.forEach(user -> user.getChannels().remove(channel))  // 로 수정
+```
 위에 경우 channels를 참조하는 와중에 remove를 통해 채널을 삭제해서 ConcurentModificationException 발생
 아래의 경우 Channels를 얻고 삭제하기 때문에 참조가 끝나고 channel을 삭제하게 됨
 - ConcurentModificationException 발생 X
