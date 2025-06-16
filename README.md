@@ -14,7 +14,8 @@
 - [파일I/O](./Part_1/4_WEEK/DAY_12(Mon)) 12일차
 - [Big O](./Part_1/4_WEEK/DAY_14(Thu)/) 12일차-13일차
 - [MiniProject2](./Part_1/4_WEEK/) 14일차-15일차
-- [Spring](./Part_1/4_WEEK/DAY_16(Fri)/)
+- [Spring](./Part_1/4_WEEK/DAY_16(Fri)/) 16일차
+ 
 ---
 
 ## 날짜 별 정리
