@@ -154,7 +154,7 @@
     - 테스트 환경 분리 용이
     - 설정 방식 유연 (XML, JAVA CONFIG, ANNOTATION ...)
 
-#### Framework / Librury
+#### Framework / Library
 - Framework는 종속됨 / lib는 작은 기능을 개발 해 둔 것 (가져다 쓰는게 자유로움 / 쓸수도 안쓸수도 있음)
   - 제어가 프레임워크 vs 개발자
 
