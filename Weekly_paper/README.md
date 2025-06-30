@@ -4,6 +4,7 @@
 - [4주차](#4주차) [해시셋 / O(n)과 O(log n)]
 - [5주차](#5주차) [Spring Framework 등장 배경 / Framework vs Library]
 - [6주차](#6주차) [웹 서버와 WAS (tomcat은 어디?) / Spring boot에 Bean등록 방법 및 장단점]
+- [7주차](#7주차) [AOP / Controller와 RestController]
 
 ## 2주차
 
@@ -218,4 +219,32 @@
 
 ---
 ## 7주차
-## 7주차
+
++ Spring에서 AOP(Aspect Oriented Programming)가 필요한 이유와 이를 활용한 실제 애플리케이션 개발 사례에 대해 설명하세요.
+  + **핵심 비즈니스 로직과는 별개인 공통 기능(횡단 관심사)을 하나의 모듈(Aspect)로 분리하여 관리** (관심사의 분리)
+  + 로깅, 트랙잭션 처리, 보안 검사, 실행시간 측정 등 여러 클래스에 분산되어 반복되기 쉬운 로직을 Aspect라고 부른다.
+    + 이러한 공통 기능을 분리하여 관리하기 위해 ( 중복 제거 및 코드 유지보수성을 위해 )
+    + @Before, @After @Around 등 어노테이션을 통해 시점을 결정한다.
+    + @Transactional을 통해 트랜잭션 처리를 하기도 한다.
+  + Spring은 @AspectJ 스타일의 AOJ를 지원하며 AspectJ 전체 기능 중 프록시 기반 AOP를 기본 제공 한다.
+
++ Spring MVC에서 클라이언트의 요청 처리 흐름을 @Controller와 @RestController의 차이점을 중심으로 각각의 처리 과정과 특징을 포함하여 설명하세오.
+  + @Controller
+    + View 기반 MVC에서 사용.
+    + 주로 Thymeleaf와 연동
+    + defualt
+    + View 이름 반환
+
+  + @RestController
+    + REST API 응답을 위한 컨트롤러
+    + 자동으로 @ResponseBody 포함 ( @Controller + @ResponseBody )
+    + 주로 JSON 반환 시 사용.
+    + 객체 또는 문자열 반환
+
+  + 클라이언트로부터 요청이 들어오면 HandlerMapping과 HandlerAdapter를 통해 적절한 컨트롤러가 Handler 메서드를 호출하게 되는데 이 때 @Controller의 경우는 문자열이 들어 있을 때, **ViewResolver + View**를 통해 해당 문자열과 매핑이 되는 View를 반환하게 된다. 문자열을 반환하고 싶을 때는 @ResponseBody를 추가해야 한다. 반면에 @RestController의 경우 문자열을 반환하게 될 시 **HttpMessageConverter**를 통해 반환 **객체를 자동으로 JSON으로 변환**하여 HTTP Body에 담아 응답하게 된다.
+  + 웹 애플리케이션(@Controller) / 렌더링 처리를 ViewResolver + View가 담당 / 결과가 View
+  + REST API 서버 (@RestController) / 렌더링 처리를 HttpMessageConverter가 담당 / 결과가 JSON 데이터
+  + 사용대상이 View는 브라우저 기반 SSR 앱 / JSON 응답은 SPA, 모바일 앱, API 통신
+
+---
+## 8주차
