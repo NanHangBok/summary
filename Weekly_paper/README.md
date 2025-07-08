@@ -268,6 +268,9 @@
   + REST API 장단점
     + UI가 바로 변경되는 것을 막고, 규칙적 분리
     + Stateless. 각 호출은 반복되는 정보와 문맥을 가지고 있음
+    + 코드 재사용성이 늘어난다.
+    + 구현 내용을 은닉할 수 있다.
+    + 표준화된 데이터 교환이 가능하다.
 
 + Spring Boot에서 @RestController로 들어온 HTTP 요청이 처리되어 응답으로 변환되는 전체 과정을 설명하세요. 특히 HTTP 메시지 컨버터가 동작하는 시점과 역할을 포함해서 설명하세요.
-  + 
+  + HTTP 요청이 들어오면 DispatcherServlet이 매핑되는 핸들러메서드를 HandlerMapping을 통해 찾은 뒤 HandlerAdapter로 결과를 위임해서 HandlerAdapter는 해당하는 컨트롤러를 찾아 메서드를 실행해 결과를 얻는다. 이 때 해당 컨트롤러가 @RestController 라면 결과가 View이름을 반환하지 않고 Text나 객체를 반환하게 되고 반환되는 결과값은 HttpMessageConverter
