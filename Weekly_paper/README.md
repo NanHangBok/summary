@@ -258,6 +258,7 @@
     + 브라우저 기반 호출이나 REST 클라이언트와 호환성 떨어짐
   + REST의 경우 구조가 단순하고 HTTP 메서드와 자원 중심 URI 구조로 일관되게 작성되서 처음 보는 API도 예측이 쉬워진다
   + 규칙만 잘 지키면 쉽게 확장할 수 있고 URI 설계 원칙을 유지하면서 자연스럽게 확장이 가능하다.
+
   + SOAP 장단점
     + 계약 기반 -> WSDL을 통해 서비스 정의 -> 클라이언트가 자동으로 인터페이스 생성
     + 엄격한 스키마 검증 -> XSD 기반 스키마를 따름. 파라미터나 리턴 값의 구조가 명확하게 정의됨
@@ -273,4 +274,6 @@
     + 표준화된 데이터 교환이 가능하다.
 
 + Spring Boot에서 @RestController로 들어온 HTTP 요청이 처리되어 응답으로 변환되는 전체 과정을 설명하세요. 특히 HTTP 메시지 컨버터가 동작하는 시점과 역할을 포함해서 설명하세요.
-  + HTTP 요청이 들어오면 DispatcherServlet이 매핑되는 핸들러메서드를 HandlerMapping을 통해 찾은 뒤 HandlerAdapter로 결과를 위임해서 HandlerAdapter는 해당하는 컨트롤러를 찾아 메서드를 실행해 결과를 얻는다. 이 때 해당 컨트롤러가 @RestController 라면 결과가 View이름을 반환하지 않고 Text나 객체를 반환하게 되고 반환되는 결과값은 HttpMessageConverter
+  + HTTP 요청이 들어오면 DispatcherServlet이 매핑되는 핸들러메서드를 HandlerMapping을 통해 찾은 뒤 HandlerAdapter로 결과를 위임해서 HandlerAdapter는 해당하는 컨트롤러를 찾아 메서드를 실행해 결과를 얻는다. 이 때 해당 컨트롤러가 @RestController 라면 결과가 View이름을 반환하지 않고 Text나 객체를 반환하게 되고 반환되는 결과값은 HttpMessageConverter로 넘겨져서 해당 클래스(MessageConverter)는 Jackson 라이브러리를 통해 JSON으로 반환되어 DispatcherServlet으로 다시 반환되어 해당 JSON 결과를 클라이언트로 넘겨준다.
+  + 컨트롤러에서 객체를 반환할 때 ResponseEntity를 반환하게 되면 HTTP 상태 코드나 헤더 내용을 추가하거나 수정해서 클라이언트(프론트엔드)로 넘겨 줄 수 있다.
+  + 응답은 보통 일관된 결과를 얻기 위해 data 필드 안에 JSON 결과를 넣는다. error는 비워둔다. 오류가 있을 시에는 data를 비워두고 error에 error내역을 담는다.
