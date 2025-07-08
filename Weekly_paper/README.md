@@ -279,7 +279,7 @@
       + 확장성 : 자원 중심 설계라 규칙만 잘 지키면 쉽게 확장할 수 있음
 
 + Spring Boot에서 @RestController로 들어온 HTTP 요청이 처리되어 응답으로 변환되는 전체 과정을 설명하세요. 특히 HTTP 메시지 컨버터가 동작하는 시점과 역할을 포함해서 설명하세요.
-  + HTTP 요청이 들어오면 **DispatcherServlet**이 매핑되는 핸들러메서드를 HandlerMapping을 통해 찾은 뒤 HandlerAdapter로 결과를 위임해서 HandlerAdapter는 해당하는 컨트롤러를 찾아 메서드를 실행해 결과를 얻는다. 이 때 해당 컨트롤러가 @RestController 라면 결과가 View이름을 반환하지 않고 **Text나 객체를 반환**하게 되고 **반환되는 결과값은 HttpMessageConverter로** 넘겨져서 해당 클래스(MessageConverter)는 Jackson 라이브러리를 통해 **JSON으로 반환**되어 DispatcherServlet으로 다시 반환되어 해당 **JSON 결과를 클라이언트(프론트엔드)로** 넘겨준다.
+  + HTTP 요청이 들어오면 (EntryPoint)**DispatcherServlet**이 매핑되는 핸들러메서드를 HandlerMapping을 통해 찾은 뒤 HandlerAdapter로 결과를 위임해서 HandlerAdapter는 해당하는 컨트롤러를 찾아 메서드를 실행해 결과를 얻는다. 이 때 해당 컨트롤러가 @RestController 라면 결과가 View이름을 반환하지 않고 **Text나 객체를 반환**하게 되고 **반환되는 결과값은 HttpMessageConverter로** 넘겨져서 해당 클래스(MessageConverter)는 Jackson 라이브러리를 통해 **JSON으로 반환**되어 DispatcherServlet으로 다시 반환되어 해당 **JSON 결과를 클라이언트(프론트엔드)로** 넘겨준다.
 
   + 컨트롤러에서 객체를 반환할 때 **ResponseEntity**를 반환하게 되면 ***HTTP 상태 코드나 헤더 내용을 추가하거나 수정***해서 클라이언트(프론트엔드)로 넘겨 줄 수 있다.
 
