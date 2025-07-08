@@ -5,7 +5,7 @@
 - [5주차](#5주차) [Spring Framework 등장 배경 / Framework vs Library]
 - [6주차](#6주차) [웹 서버와 WAS (tomcat은 어디?) / Spring boot에 Bean등록 방법 및 장단점]
 - [7주차](#7주차) [AOP / Controller와 RestController]
-- [8주차](#8주차) 
+- [8주차](#8주차) [SOAP과 REST / @RestController 처리 과정]
 
 ## 2주차
 
@@ -270,10 +270,14 @@
     + UI가 바로 변경되는 것을 막고, 규칙적 분리
     + Stateless. 각 호출은 반복되는 정보와 문맥을 가지고 있음
     + 코드 재사용성이 늘어난다.
-    + 구현 내용을 은닉할 수 있다.
-    + 표준화된 데이터 교환이 가능하다.
+    + *구현 내용*을 은닉할 수 있다.
+    + **표준화된 데이터 교환**이 가능하다.
+    + **일관성과 확장성**이 좋다.
+      + 일관성 : HTTP 메서드와 자원 중심 URI 구조를 일관되게 사용
+        + **처음보는 API도 예측이 쉬워짐**
+      + 확장성 : 자원 중심 설계라 규칙만 잘 지키면 쉽게 확장할 수 있음
 
 + Spring Boot에서 @RestController로 들어온 HTTP 요청이 처리되어 응답으로 변환되는 전체 과정을 설명하세요. 특히 HTTP 메시지 컨버터가 동작하는 시점과 역할을 포함해서 설명하세요.
-  + HTTP 요청이 들어오면 DispatcherServlet이 매핑되는 핸들러메서드를 HandlerMapping을 통해 찾은 뒤 HandlerAdapter로 결과를 위임해서 HandlerAdapter는 해당하는 컨트롤러를 찾아 메서드를 실행해 결과를 얻는다. 이 때 해당 컨트롤러가 @RestController 라면 결과가 View이름을 반환하지 않고 Text나 객체를 반환하게 되고 반환되는 결과값은 HttpMessageConverter로 넘겨져서 해당 클래스(MessageConverter)는 Jackson 라이브러리를 통해 JSON으로 반환되어 DispatcherServlet으로 다시 반환되어 해당 JSON 결과를 클라이언트로 넘겨준다.
-  + 컨트롤러에서 객체를 반환할 때 ResponseEntity를 반환하게 되면 HTTP 상태 코드나 헤더 내용을 추가하거나 수정해서 클라이언트(프론트엔드)로 넘겨 줄 수 있다.
-  + 응답은 보통 일관된 결과를 얻기 위해 data 필드 안에 JSON 결과를 넣는다. error는 비워둔다. 오류가 있을 시에는 data를 비워두고 error에 error내역을 담는다.
+  + HTTP 요청이 들어오면 **DispatcherServlet**이 매핑되는 핸들러메서드를 HandlerMapping을 통해 찾은 뒤 HandlerAdapter로 결과를 위임해서 HandlerAdapter는 해당하는 컨트롤러를 찾아 메서드를 실행해 결과를 얻는다. 이 때 해당 컨트롤러가 @RestController 라면 결과가 View이름을 반환하지 않고 **Text나 객체를 반환**하게 되고 **반환되는 결과값은 HttpMessageConverter로** 넘겨져서 해당 클래스(MessageConverter)는 Jackson 라이브러리를 통해 **JSON으로 반환**되어 DispatcherServlet으로 다시 반환되어 해당 **JSON 결과를 클라이언트(프론트엔드)로** 넘겨준다.
+  + 컨트롤러에서 객체를 반환할 때 **ResponseEntity**를 반환하게 되면 ***HTTP 상태 코드나 헤더 내용을 추가하거나 수정***해서 클라이언트(프론트엔드)로 넘겨 줄 수 있다.
+  + 응답은 보통 **일관된 결과**를 얻기 위해 data 필드 안에 JSON 결과를 넣는다. error는 비워둔다. 오류가 있을 시에는 data를 비워두고 error에 error내역을 담는다.
