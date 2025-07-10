@@ -284,7 +284,15 @@
   + 컨트롤러에서 객체를 반환할 때 **ResponseEntity**를 반환하게 되면 ***HTTP 상태 코드나 헤더 내용을 추가하거나 수정***해서 클라이언트(프론트엔드)로 넘겨 줄 수 있다.
 
   + 응답은 보통 **일관된 결과**를 얻기 위해 data 필드 안에 JSON 결과를 넣는다. error는 비워둔다. 오류가 있을 시에는 data를 비워두고 error에 error내역을 담는다.
- 
+
+  + MessageConverter는 총 2번 동작한다.
+    + 요청 처리 시, HandlerAdapter가 컨트롤러의 파라미터를 분석할 때 ArgumentResolver가 동작한다.
+        + 이때 @RequestBody가 붙은 **객체 파라미터**는, **요청 본문의 JSON 데이터를 MessageConverter가 해당 객체의 필드와 1:1로 매핑하여 Java 객체로 변환**한다.
+    + 컨트롤러는 이 변환된 객체를 사용해 로직을 수행하고, 리턴 객체를 반환한다.
+    + **응답 처리 시**, HandlerAdapter는 이 리턴 객체를 다시 **MessageConverter를 통해 JSON 문자열로 직렬화**한다.
+    + 직렬화된 JSON은 DispatcherServlet을 통해 **클라이언트에게 HTTP 응답 본문으로 전송**된다.
+    + *만약 객체 파라미터를 사용하지 않는다면 MessageConverter는 동작하지 않는다*.
+
 ---
 
 ## 9주차
