@@ -301,6 +301,14 @@
 + SQL에서 DDL과 DML의 차이점을 설명하고, 각각의 대표적인 명령어들의 용도를 설명하세요.
   + DDL : Data Definition Language (데이터 정의어) : 테이블과 같은 데이터 구조를 정의하는데 사용되는 명령어들 ( 생성, 변경, 삭제, 이름변경 등) 데이터 구조와 관련된 명령어들을 말함
     + Create : 테이블 생성
+      ```sql
+      CREATE TABLE [table_name](
+        [column1] uuid PRIMARY KEY,
+        [column2] varchar(100) [UNIQUE | NOT NULL ...],
+        [column3] uuid,
+        FOREIGN KEY ([fk_column]) REFERENCES [fk_table](fk_column) ON DELETE CASCADE
+      );
+      ```
     + Alter : 테이블 구조 수정
     + Rename : 테이블 이름 수정
     + Drop : 테이블 삭제
