@@ -8,6 +8,7 @@
 - [8주차](#8주차) [SOAP과 REST / @RestController 처리 과정]
 - [9주차](#9주차) [DDL과 DML / 역정규화]
 - [10주차](#10주차) [N+1 / ACID 중 Isolation, 격리수준]
+- [13주차](#13주차) 
 
 ## 2주차
 
@@ -470,3 +471,64 @@
       + 두 개 이상의 프로세스(또는 트랜잭션)가 서로 상대방의 자우너을 기다리며 무한 대기하는 상태
       > A는 B의 자원을 기다리고<br>
       > B는 A의 자원을 기다리는 상황 => **서로 기다리느라 끝나지 않음**
+
+---
+
+## 13주차
++ 애플리케이션의 각 계층에서 수행되는 입력값 검증의 범위와 책임을 어떻게 나눌 것인지에 대해 설명해주세요. 특히 중복 검증을 피하면서도 안정성을 확보하는 방안과, 이와 관련된 트레이드오프에 대해 설명해주세요.
+  + Controller : 보통 웹에서 들어오는 값의 정합성을 검증한다.
+    + +DTO를 통한 정합성 검증
+    + @Valid 또는 @Validated를 적용하여 요청 데이터를 자동으로 검증 가능.
+    + 검증 실패 시 BindingResult를 통해 오류 정보를 확인하고 적절한 응답을 반환 가능.
+    + ```
+      @PostMapping("/users")
+      public String createUser(@Valid UserForm userForm, BindingResult bindingResult, Model model) {
+          if (bindingResult.hasErrors()) {
+              return "users/form";  // 검증 실패 시 폼으로 다시 이동
+          }
+          userService.create(userForm);
+          return "redirect:/users";  // 검증 성공 시 리다이렉트
+      }
+      ```
+    + @Valid 또는 @Validated가 적용된 파라미터 바로 다음에 위치해야 함.
+    + @Valid = Bean 검증
+    + 메서드 파라미터 검증 = 클래스에 @Validated 사용, @NotNull등 어노테이션 사용
+      + ```
+        public class MemberRequest {
+            @NotNull(groups = Update.class) // 수정 시만 필수
+            private Long id;
+        
+            @NotBlank(groups = {Create.class, Update.class}) // 생성·수정 모두 필수
+            private String name;
+        
+            interface Create {}
+            interface Update {}
+        }
+        
+        @PostMapping("/members")
+        public void create(@Validated(MemberRequest.Create.class) @RequestBody MemberRequest req) {
+            // Create 그룹에 해당하는 필드만 검증
+        }
+        
+        @PutMapping("/members")
+        public void update(@Validated(MemberRequest.Update.class) @RequestBody MemberRequest req) {
+            // Update 그룹에 해당하는 필드만 검증
+        }
+        ```
+  + Service : 컨트롤러보다 더 복잡한 비즈니스 규칙을 검증하거나 도메인 객체 간의 관계 검증 등을 수행할 수 있다.
+    + 복잡한 비즈니스 규칙 ex) 출발 계좌와 목적 계좌는 같을 수 없다.
+    + 복잡한 비즈니스 검증을 재사용 가능하다.
+    + 도메인 중심의 책임 분리가 가능하다.
+  + Repository : DB 제약을 통해 데이터 정합성을 검증한다.
+ 
+  + 중복검증 : 데이터의 정합성을 웹, Controller, Service, Repository 모든 계층에서 검증 시 제약 조건이 변경되면 모든 코드를 바꿔야 한다.
+  + 입력값 검증의 범위와 책임을 명확히 나누면 중복 검증을 피할 수 있고 코드의 유지보수가 쉬워진다.
+  + Controller에서 복잡한 비즈니스 로직까지 검증하면 Service 계층과 코드가 중복되는 경우가 생길 수 있고
+  + Service에서 모든 검증을 처리하게 되면 검증되지 않은 데이터로 불필요한 호출이 발생할 수 있다.
+  + 위에서 언급한 groups를 통한 그룹 검증을 무분별하게 사용 시 관리 복잡도가 증가한다.
+  + Repository까지 검증 필요성이 내려오면 DB호출이 증가하게 되고 결국 예외 처리는 서비스에서 하게되는 불필요한 호출이 증가한다.
+
++ 테스트에서 사용되는 Mockito의 Mock, Stub, Spy 개념을 각각 설명하고, 어떤 상황에서 어떤 방식을 선택해야 하는지 구체적인 예시와 함께 설명하세요.
+  + Stub : 고정된 응답 반환, 테스트 대상 외부 동작을 하드 코딩하여 제공, 간단한 조건/결과가 필요한 테스트
+  + Mock : 호출 여부/순서/횟수 검증/ 행동 설정 가능, 미리 동작 정의하거나 호출 결과를 검증, 외부 시스템이 복잡하거나 테스트 검증이 필요한 경우
+  + Spy : 실제 객체를 감싸서 일부 메서드만 mocking, 실제 객체와 결합되어 실제 동작도 가능, 일부만 대체하고 나머지는 실제 동작해야 할 때
