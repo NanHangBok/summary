@@ -8,7 +8,7 @@
 - [8주차](#8주차) [SOAP과 REST / @RestController 처리 과정]
 - [9주차](#9주차) [DDL과 DML / 역정규화]
 - [10주차](#10주차) [N+1 / ACID 중 Isolation, 격리수준]
-- [13주차](#13주차) 
+- [13주차](#13주차) [각 계층에서 수행되는 입력값 검증 / Mockito ]
 
 ## 2주차
 
@@ -532,3 +532,38 @@
   + Stub : 고정된 응답 반환, 테스트 대상 외부 동작을 하드 코딩하여 제공, 간단한 조건/결과가 필요한 테스트
   + Mock : 호출 여부/순서/횟수 검증/ 행동 설정 가능, 미리 동작 정의하거나 호출 결과를 검증, 외부 시스템이 복잡하거나 테스트 검증이 필요한 경우
   + Spy : 실제 객체를 감싸서 일부 메서드만 mocking, 실제 객체와 결합되어 실제 동작도 가능, 일부만 대체하고 나머지는 실제 동작해야 할 때
+  + ```java
+    // Stub 예시
+    EmailService stubEmailService = new EmailService() {
+        @Override
+        public boolean sendEmail(String to, String message) {
+            return true; // 항상 성공
+        }
+    };
+    // 고정된 응답을 반환하기 때문에 단순한 결과(boolean 상태값, 단순한 리턴값)를 확인하고 싶을 때 사용
+    ```
+    
+  + ```java
+    // Mock 예시 (Mockito 사용)
+    EmailService mockEmailService = mock(EmailService.class);
+    when(mockEmailService.sendEmail(anyString(), anyString()))
+    	.thenReturn(true);
+    when(mockEmailService.sendEmail("김러키", "귀여워"))
+    	.thenReturn(true);
+    verify(mockEmailService, times(1)).sendEmail("user@example.com", "가입을 환영합니다");
+    // 메서드의 인자값, 호출 여부, 호출 횟수 등을 검증하고 싶을 때 사용
+    // 단순히 결과를 확인하기보다는 호출(행위)를 검증하고 싶을 때
+    // 외부 시스템이 복잡하거나 테스트 검증이 필요한 경우
+    ```
+    
+  + ```java
+    // Spy 예시 (일부만 mocking)
+    EmailService realService = new EmailService();
+    EmailService spyService = spy(realService);
+    doReturn(true).when(spyService).sendEmail(anyString(), anyString());
+    // 실제 객체를 spy객체로 감싸서 실행.
+    // 일부 메서드만 mocking
+    // doReturn(true).when(spyService).sendEmail(anyString(), anyString());는 실행이 아닌 설정 코드
+    // 일부만 대체하고 나머지는 실제 동작해야 할 때 사용
+    // 검증 로직을 무시한채 비즈니스 로직이 실행하는 지 확인할 때?
+    ```
