@@ -10,3 +10,6 @@
     - AfterTransaction 어노테이션을 사용해 repository.deleteAll() 실행
     - +UserRepository.deleteAll() 시 ReadStatus가 존재해서 삭제 안되는 상황 발생
     - 추가로 readStatusRepository.deleteAll() 추가
+- 참고
+  - https://sosimhan-dev.tistory.com/3
+  - https://jojoldu.tistory.com/761
