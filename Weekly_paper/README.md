@@ -740,16 +740,16 @@
       - 백업/로그 정리를 위한 스크립트 실행
       - 정기적인 보안 스캔 또는 종속성 업데이트 확인
       - etc.. 일정 주기로 수행되어야 하는 작업
-    - ```
-      on:
-        push:
-          branches: [ "main", "develop" ]  # main, develop 에 푸시 시
-        pull_request:
-          branches: [ "main" ]  # main에 pr 생성 시
-        schedule:
-          - cron: '0 9 * * 1'   # 매주 월요일 오전 9시에 실행
-      ```
+  - ```
+    on:
+      push:
+        branches: [ "main", "develop" ]  # main, develop 에 푸시 시
+      pull_request:
+        branches: [ "main" ]  # main에 pr 생성 시
+      schedule:
+        - cron: '0 9 * * 1'   # 매주 월요일 오전 9시에 실행
+    ```
   - 그 외 트리거 및 자세한 내용은 공식문서
-    - ce/workflows-and-actions/events-that-trigger-workflows
+    - [GitHub 액션 문서](https://docs.github.com/ko/actions/reference/workflows-and-actions/events-that-trigger-workflows)
   - 공식 문서 외 참고 :
     - https://velog.io/@khn1346/GitHub-Actions%EC%97%90%EC%84%9C-%EC%82%AC%EC%9A%A9%EB%90%98%EB%8A%94-%ED%8A%B8%EB%A6%AC%EA%B1%B0Trigger-%EC%9C%A0%ED%98%95-mh1k5zir
