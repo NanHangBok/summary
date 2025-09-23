@@ -11,6 +11,7 @@
 - [13주차](#13주차) [각 계층에서 수행되는 입력값 검증 / Mockito ]
 - [14주차](#14주차) [컨테이너 기술과 Docker / 컨테이너 오케스트레이션]
 - [15주차](#15주차) [RDS / GitHub Actions]
+- [19주차](#19주차)
 
 ## 2주차
 
@@ -753,3 +754,11 @@
     - [GitHub 액션 문서](https://docs.github.com/ko/actions/reference/workflows-and-actions/events-that-trigger-workflows)
   - 공식 문서 외 참고 :
     - https://velog.io/@khn1346/GitHub-Actions%EC%97%90%EC%84%9C-%EC%82%AC%EC%9A%A9%EB%90%98%EB%8A%94-%ED%8A%B8%EB%A6%AC%EA%B1%B0Trigger-%EC%9C%A0%ED%98%95-mh1k5zir
+   
+---
+
+## 19주차
+
+- 세션 기반 인증과 토큰 기반 인증의 차이점과 각각의 보안 고려사항에 대해 설명하세요.
+- OAuth 2.0의 주요 컴포넌트와 Authorization Code Grant 흐름을 설명하세요.
+
