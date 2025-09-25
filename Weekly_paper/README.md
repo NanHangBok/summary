@@ -758,7 +758,7 @@
 ---
 
 ## 19주차
-- 세션 기반 인증과 토큰 기반 인증의 차이점과 각각의 보안 고려사항에 대해 설명하세요.
+#### 세션 기반 인증과 토큰 기반 인증의 차이점과 각각의 보안 고려사항에 대해 설명하세요.
   - 세션 기반
     - 세션 기반은 인증 정보를 서버쪽에 저장하는 방식으로 다시 말해 클라이언트(브라우저)가 가지고 있는 것이 아닌 호스팅하는 주체 서버쪽에서 인증 정보를 세션저장소에 저장하여 세션 ID를 통해 접근하는 방식이다.
     - 사용자 식별 정보나 인증 상태 정보,역할 등을 세션 저장소에 저장하고 세션ID를 통해 접근하게 된다.
@@ -816,5 +816,45 @@
       - 토큰 무효화 전략
         - 발급 후 만료 전까지는 무효화할 수 없어 이를 보완하기 위해 서버 측에서 블랙리스트를 관리하거나 Redis같은 인메모리 DB를 활용할 수 있음
         - Refresh 토큰의 경우 서버 DB에서 Refresh 토큰을 제거하거나 Refresh 토큰이 사용 될 때마다 새 Refresh 토큰을 발급하고 이전 것을 무효화하는 방식으로 탈취 여부를 확인할 수 있다.
-- OAuth 2.0의 주요 컴포넌트와 Authorization Code Grant 흐름을 설명하세요.
 
+#### OAuth 2.0의 주요 컴포넌트와 Authorization Code Grant 흐름을 설명하세요.
+- **주요 컴포넌트**
+  - Resource Owner
+    - Resource의 실제 소유자
+    - **서비스 사용자(User)를 의미한다**
+    - 사용자는 자신의 계정 정보를 직접 관리하고 있으며, OAuth 2 프로세스에서 최종 결정권을 가진 주체
+   
+  - Client
+    - Resource Owner를 대신하여 Resource에 접근하는 애플리케이션
+    - 서버, 웹, 모바일 등 다양한 형태가 될 수 있음
+    - 서비스를 이용하고자 하는 쪽이 Client
+      - 즉, OAuth 서비스 제공자 (ex: google, naver, kakao)가 아닌 OAuth를 도입한 애플리케이션 (우리가 개발한 서버, 웹 등)이 Client
+   
+  - Resource Server
+    - 보호된 자원을 실제로 저장하고 있는 서버
+    - Client의 요청을 Access Token으로 검증하고, 올바르다면 자원을 반환
+    - ex : Google Photo API 서버가 Resource Server
+   
+  - Authorization Server
+    - Resource Owner의 인증을 처리하고, Client에게 Access Token을 발급하는 서버
+    - OAuth 2에서 가장 중요한 역할을 맡고 있으며, 자격 증명의 신뢰성을 보장
+    - Access Token 발급자
+    - Access Token은 Resource Owner가 아닌 Client에 제공된다.
+    - ex : Google의 로그인 서버
+- **Authorization Code Grant**
+  - 권한 부여 승인을 위해 자체 생성한 Authorization Code를 전달하는 방식
+    - 가장 많이 쓰이고 기본이 되는 방식
+  - Refresh Token을 사용할 수 있음
+    - Implicit grant과 Client Credentials Grant는 불가능.
+  - 권한 부여 승인 요청 시 응답 타입(response_type)을 `code`로 지정하여 요청
+  - *인증 처리 흐름*
+    - Resource Owner는 소셜 로그인 버튼을 누르는 등의 서비스 요청을 Client(애플리케이션)에게 전송
+    - Client는 Authorization Server에 Authroization Code를 요청
+      - 이때 미리 생성한 Client ID, Redirect URI, 응답 타입을 함께 전송
+    - Resource Owner는 로그인 페이지를 통해 로그인 진행
+    - 로그인이 확인되면 Authorization Server는 Authroization Code를 Client에게 전달
+      - 이 전에 요청과 함께 전달한 Redirect URI로 Code 전달
+    - Client는 전달 받은 Authorization Code를 이용해 Access Token 발급을 요청. Access Token을 요청할 때 미리 생성한 Client Secret, Redirect URI, 권한 부여 방식, Authorization Code를 함께 전송
+    - 요청 정보를 확인한 후 Redirect URI로 Access Token 발급
+    - Client는 발급받은 Access Token을 이용해 Resource Server에 Resource를 요청
+    - Access Token을 확인한 후 요청 받은 Resource를 Client에게 전달
