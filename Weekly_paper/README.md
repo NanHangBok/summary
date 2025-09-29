@@ -12,6 +12,7 @@
 - [14주차](#14주차) [컨테이너 기술과 Docker / 컨테이너 오케스트레이션]
 - [15주차](#15주차) [RDS / GitHub Actions]
 - [19주차](#19주차) [세션 기반과 토큰기반 / OAuth 2.0]
+- [20주차](#20주차) [웹 애플리케이션 4가지 주요 보안 공격 / JWT]
 
 ## 2주차
 
@@ -858,3 +859,84 @@
     - 요청 정보를 확인한 후 Redirect URI로 Access Token 발급
     - Client는 발급받은 Access Token을 이용해 Resource Server에 Resource를 요청
     - Access Token을 확인한 후 요청 받은 Resource를 Client에게 전달
+
+## 20주차
+#### Spring 기반 웹 애플리케이션에서 발생할 수 있는 4가지 주요 보안 공격 (CSRF, XSS, 세션 고정, JWT 탈취)에 대해 설명하고, 각각에 대한 Spring Security 또는 일반적인 대응 전략을 설명하세요.
++ CSRF
+  + 사용자가 의도하지 않은 요청을 공격자가 위조하여 서버에 보내도록 하는 공격 기법
+  + 피해자는 이미 로그인된 세션을 가진 상태이므로, 서버는 공격자가 보낸 요청을 정상 요청으로 오인하게 된다.
+  + Spring Security CSRF 보호 기본 메커니즘
+    + 기본적으로 상태 유지 세션 기반 애플리케이션에서 CSRF 보호를 활성화
+    + 서버는 요청 시 CSRF 토큰을 검증하여, 클라이언트가 의도적으로 요청을 보냈는지 확인
+    + CsrfFilter
+      + 모든 요청에 대해 CSRF 토큰을 검증하는 필터. 사용자가 보낸 요청에 _csrf 파라미터나 헤더 값이 없는 경우 AccessDeniedException 발생
+    + CsrfToken
+      + 서버가 세션별로 생성하여 클라이언트에 전달하는 토큰
+      + 이 토큰은 매 요청마다 클라이언트가 전달해야 하며, 서버는 저장된 토큰과 비교하여 일치 여부를 검사합니다.
+      + 토큰 생성 과정
+        + 사용자가 최초로 세션을 생성하거나 페이지를 요청할 때 고유한 난수 기반 토큰 생성
+        + `HttpSessionCsrfTokenRepository`(기본 구현체) 또는 `CookieCsrfTokenRepository`에 저장
+      + 토큰 전달 방식
+        + 폼 hidden 필드 : 서버에서 렌더링 시 _csrf 값을 자동 삽입
+        + AJAX/SPA : 응답 헤더 또는 meta 태그로 전달 후, 요청 시 X-CSRF-TOKEN 헤더에 포함
+        + Double-submit 쿠키 : 토큰을 쿠키와 헤더 모두에 담아 서버에서 일치 여부 검증
+      + 검증 방식
+        + 요청이 들어오면 CsrfFilter가 동작
+        + 요청에 포함된 토큰(_csrf 필드 또는 헤더 값)을 추출
+        + 저장소(HttpSession 또는 Cookie)에 보관된 토큰과 비교
+        + 일치하면 정상 요청, 불일치 또는 누락 시 AccessDeniedException 발생
+    + 보강 전략
+      + Origin/Referer 검증 : 요청 헤더로 동일 출처인지 확인
+      + SameSite 쿠키 : Lax 또는 Strict 설정으로 크로스 도메인 요청 차단
+      + XSS 방어 : 토큰 탈취 방지를 위해 필수
++ XSS (Cross-Site Scripting)
+  + 공격자가 악의적인 스크립트를 웹 페이지에 삽입하여 사용자의 브라우저에서 실행되도록 하는 공격 기법
+  + 주로 쿠키 탈취, 세션 하이재킹, 악성 사이트 리다이렉션, 피싱 등에 활용
+  + 주요 유형
+    + Stored XSS : 서버 DB에 저장된 악성 스크립트가 여러 사용자에게 전달 됨
+    + Reflected XSS : URL 파라미터에 삽입된 스크립트가 즉시 응답에 반영
+    + DOM 기반 XSS : 서버 응답과 무관하게 클라이언트 JS 코드가 DOM 조작으로 공격 실행
+  + Spring XSS 방어
+    + 브라우저가 응답 헤더를 근거로 위험한 리소스/스크립트를 차단하도록 하는 접근
+    + CSP 와 X-Content-Type-Options: nosniff
+    + CSP (Content-Security-Policy) :
+      + 스크립트/리소스 로딩,실행 원천 제한
+      + 브라우저가 강제하는 보안 정책
+        + 어떤 출처의 리소스만 로드/실행 가능한지 선언적으로 헤더에 규정
+        + 스크립트 실행 원천을 제한
+        + 인라인 스크립트 금지 또는 허용된 nonce/hash만 실행
+      + nonce : 요청마다 서버가 난수 생성 -> `<script nonce="<값>">`에만 실행 허용
+        + 동적 스크립트에 유연
+        + 응답마다 생성/주입 필요
+        + 서버사이드 렌더링(Thymeleaf 등)에서 사용 권장
+      + hash : 스크립트 내용의 SHA-256 등 고정 해시가 정책에 등록된 것만 실행 허용
+        + CDN/정적 스크립트에 적합
+        + 내용 변경 시 해시 갱신 필요
+        + 빌드 파이프라인 연계에서 사용 권장
+    + X-Content-Type-Options :
+      + MIME 스니핑 방지
+        + 잘못된 타입의 리소스 실행/렌더링 금지
+        + JSON,스크립트 오인 실행 방지
+      + 컨트롤러에서 정확한 Content-Type 지정
+      + 전역으로 X-Content-Type-Options: nosniff 적용 → 브라우저 임의 추측 금지
+    + CSP 위반 : 스크립트 / 리소스 차단
+    + 타입 불일치 & nosniff : 렌더링 / 실행 거부
++ 세션 고정
+  + 공격자가 미리 발급받은 세션 ID를 피해자에게 강제로 사용하게 한 뒤, 해당 세션을 탈취하는 공격 기법
+  + 피해자가 정상적으로 로그인하더라도 이미 공격자가 알고 있는 세션 ID가 그대로 유지된다면 공격자는 세션을 가로챌 수 있음
+  + Spring 세션 고정 보호 전략
+    + 로그인 시점에 세션 ID를 어떻게 다룰지 결정하는 session fixation 보호 전략 제공
+      + none
+        + 기존 세션 그대로 유지
+      + newSession
+        + 새로운 세션을 생성하고 기존 속성은 복사하지 않음
+        + 세션 완전 초기화
+      + migrateSession
+        + 새로운 세션을 생성하고 속성을 복사
+        + 보안 + 사용자 편의 균형
+      + changeSessionId
+        + 세션 ID만 새로 발급, 속성 그대로 유지
+        + Servlet 3.1+ 환경 권장
++ JWT 탈취
+
+#### JWT(JSON Web Token)의 구조와 각 구성 요소가 어떤 역할을 하는지 구체적으로 설명하세요.
