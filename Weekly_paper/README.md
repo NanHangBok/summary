@@ -13,6 +13,7 @@
 - [15주차](#15주차) [RDS / GitHub Actions]
 - [19주차](#19주차) [세션 기반과 토큰기반 / OAuth 2.0]
 - [20주차](#20주차) [웹 애플리케이션 4가지 주요 보안 공격 / JWT]
+- [21주차](#21주차) [경쟁 상태 / 비동기 환경 컨텍스트 정보 전달 ]
 
 ## 2주차
 
@@ -1019,3 +1020,63 @@
     ```
 + 참고 :
   + https://velopert.com/2389
+
+---
+
+## 21주차
+#### 멀티스레드 환경에서 발생하는 대표적인 문제 중 하나인 경쟁 상태(Race Condition)에 대해 설명하고, 이를 해결하기 위한 다양한 전략을 설명해보세요.
++ 경쟁 상태
+  + 둘 이상의 스레드나 프로세스가 공유된 자원(ex: 변수, 메모리 등)에 대해 동시에 접근하는 변경하는 경우 발생할 수 있는 문제
+  + 어떤 스레드나 프로세스가 먼저 접근하여 변경한 값을 다른 스레드나 프로세스가 무시하거나 올바르지 않은 값을 사용하는 등의 문제가 발생할 수 있음
+ 
++ 해결 전략
+  + Synchronized
+    + 여러 스레드가 공유 자원에 접근할 때, 한 번에 하나의 스레드만 접근하도록 제한하는 방식
+  + 불변 객체 활용
+    + 객체의 상태를 한 번 정의한 후 변경할 수 없도록 설계
+    + 상태 변경이 필요한 경우, 기존 객체를 수정하지 않고 새 객체를 생성
+  + 스레드 로컬 사용
+    + 각 스레드에 독립된 변수를 제공하여 공유 자체를 하지 않도록 설계
+    + 공유 자원을 없애 경쟁 상태를 원천적으로 방지
+  + 원자적 연산 사용
+    + 하나의 연산이 중단 없이 실행되도록 보장하는 방식
+    + 내부적으로 CAS(Compare-And-Swap)를 활용해 락 없이 동시성 처리
+  + Concurrent 자료구조 활용
+    + 자바에서 제공하는 동시성 컬렉션을 사용해 직접 동기화하지 않고도 안전한 접근을 가능하게 함
+    + 내부적으로 세분화된 락 또는 비동기 처리 구조로 구성됨
++ 참고 :
+  + https://velog.io/@uurr/%EB%A9%80%ED%8B%B0%EC%8A%A4%EB%A0%88%EB%93%9C-%ED%99%98%EA%B2%BD%EA%B3%BC-%EA%B2%BD%EC%9F%81-%EC%83%81%ED%83%9CRace-Condition-%EA%B7%B8%EB%A6%AC%EA%B3%A0-%ED%95%B4%EA%B2%B0-%EC%A0%84%EB%9E%B5#%EA%B2%BD%EC%9F%81-%EC%83%81%ED%83%9C-%ED%95%B4%EA%B2%B0-%EC%A0%84%EB%9E%B5
+
+#### 비동기 환경에서 MDC(Logback Mapped Diagnostic Context)나 SecurityContext 같은 컨텍스트 정보를 스레드 간에 전달해야 할 경우, 처리하는 방법에 대해 설명하세요.
++ > Spring 애플리케이션에서는 로그 추적을 위해 MDC를 사용하거나, 인증 정보를 담는 SecurityContext를 다루는 경우가 많음\
+  > 이 두 가지는 기본적으로 ThreadLocal 기반으로 동작하기 때문에, @Async, 스레드 풀, Reactor 같은 비동기 실행 환경에서는 새로운 스레드로 전환될 때 값이 사라져 버림.\
+  > 따라서 추가적인 전파 작업을 해주지 않으면 로그에 요청 ID가 누락되거나, 인증 정보가 비동기 실행 코드에서 보이지 않는 문제가 발생할 수 있음 
++ Spring Security에서는 DelegatingSecurityContext 계열 유틸리티를 제공
+  + DelegatingSecurityContextRunnable
+  + DelegatingSecurityContextCallable
+  + DelegatingSecurityContextExecutor
+  + DelegatingSecurityContextAsyncTaskExecutor
+  + -> 비동기 실행 중에도 SecurityContext가 자동으로 복사되어 인증 정보가 유지 됨
+
++ MDC는 스레드별 저장소
++ MDC를 비동기 환경에서 사용하려면 TaskDecorator를 통해 부모 스레드의 컨텍스트를 복사해 주어야 함
+  + ```java
+    @Bean
+    public TaskDecorator mdcTaskDecorator() {
+        return runnable -> {
+            Map<String, String> contextMap = MDC.getCopyOfContextMap();
+            return () -> {
+                if (contextMap != null) MDC.setContextMap(contextMap);
+                try {
+                    runnable.run();
+                } finally {
+                    MDC.clear();
+                }
+            };
+        };
+    }
+    ```
+  + -> 스레드 풀 내부에서 실행되는 작업도 부모 스레드의 MDC 값을 그대로 이어 받을 수 있음.
+
++ 참고 :
+  + https://velog.io/@jinsol8k/%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C%EC%9D%98-%EC%8A%A4%EB%A0%88%EB%93%9C-%EA%B0%84-%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%A0%95%EB%B3%B4-%EC%A0%84%EB%8B%AC
