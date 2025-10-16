@@ -1046,6 +1046,10 @@
     + 내부적으로 세분화된 락 또는 비동기 처리 구조로 구성됨
 + 참고 :
   + https://velog.io/@uurr/%EB%A9%80%ED%8B%B0%EC%8A%A4%EB%A0%88%EB%93%9C-%ED%99%98%EA%B2%BD%EA%B3%BC-%EA%B2%BD%EC%9F%81-%EC%83%81%ED%83%9CRace-Condition-%EA%B7%B8%EB%A6%AC%EA%B3%A0-%ED%95%B4%EA%B2%B0-%EC%A0%84%EB%9E%B5#%EA%B2%BD%EC%9F%81-%EC%83%81%ED%83%9C-%ED%95%B4%EA%B2%B0-%EC%A0%84%EB%9E%B5
+ 
+> 경쟁 상태와 교착상태의 차이
+>> 경쟁 상태 : 두 개 이상의 스레드나 프로세스가 같은 자원에 동시에 접근하여 실행 순서에 따라 결과가 달라지는 현상\
+>> 교착 상태 : 두 개 이상의 스레드가 서로가 가진 자원을 기다리며 무한히 대기하는 상태
 
 #### 비동기 환경에서 MDC(Logback Mapped Diagnostic Context)나 SecurityContext 같은 컨텍스트 정보를 스레드 간에 전달해야 할 경우, 처리하는 방법에 대해 설명하세요.
 + > Spring 애플리케이션에서는 로그 추적을 위해 MDC를 사용하거나, 인증 정보를 담는 SecurityContext를 다루는 경우가 많음\
