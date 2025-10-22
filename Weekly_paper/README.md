@@ -1089,7 +1089,7 @@
 ---
 ## 22주차
 #### Spring Cache에서 @Cacheable, @CachePut, @CacheEvict의 차이점과 각각을 어떤 상황에서 사용하는 것이 적절한지 설명해주세요.
-+ @Cacheable
++ **@Cacheable**
   + 메서드 실행 결과를 캐시에 저장하고
   + 동일한 인자로 호출 시 저장된 값을 반환
   + ```@Cacheable("products")` -> 캐시 이름이 `products`인 저장소에 결과를 저장
@@ -1098,20 +1098,60 @@
     + `condition` : 캐싱을 수행할 조건 지정 (true일 때만 저장)
     + `unless` : 메서드 실행 후 결과에 따라 저장 여부 결정
     + `@Cacheable(value = "products", condition = "#id > 0", unless = "#result == null")`
-+ @CachePut
+  + 속성
+    + value : cacheName의 Alias
+    + key : 동일한 cache name을 사용하지만 구분될 필요가 있을 때 사용
+    + condition : 캐싱을 수행할 조건 지정. true일 때 캐싱 적용
+    + unless : 캐싱을 막기위해 사용. 메서드 실행 후 결과에 따라 저장 여부 결정. true일때 캐싱하지 않음
++ **@CachePut**
   + 항상 메서드를 실행하고, 실행 결과를 캐시에 강제로 갱신
     + @Cacheable의 경우 캐시에 없을 때만 실행 / @CachePut은 한상 실행
     + @Cacheable은 조회 성능 향상의 목적 / @CachePut은 데이터 갱신 후 캐시 자동화의 목적
-+ @CacheEvict
+  + 속성
+    + value
+    + key
+    + condition
++ **@CacheEvict**
   + 캐시된 데이터를 제거할 때 사용
   + key : 특정 데이터 / allEntries : 전체 삭
   + `beforeInvocation = true` : 메서드 실행 전에 캐시 삭제 / Default : false
- 
+  + 속성
+    + value
+    + key
+    + condition
+    + allEntries : 캐시 내의 모든 리소스를 삭제할 지 여부
+ + **적절한 상황**
+
 | 어노테이션     | 설명                                    | 사용 상황         |
 |-------------|----------------------------------------|----------------|
 | @Cacheable  | 결과를 캐시에 저장하도고 동일 인자 시 캐시에서 반환 | 조회 시 캐시에 저장 |
 | @CachePut   | 메서드 실행 후 캐시를 강제 갱신                | 수정 시 캐시 갱신  |
-| @CacheEvict | 캐시 제거                                 | 삭제 시 캐시 제거   |
+| @CacheEvict | 캐시 제거                                 | 삭제 시 캐시 제거  |
+
+##### 추가 내용
++ 여러 캐시 동작을 묶어서 수행 가능
+  + **@Caching**
+  + ```java
+    @Caching(
+        put = {@CachePut(value = "products", key = "#product.id")},
+        evict = {@CacheEvict(value = "products", key = "'list'")}
+    )
+    ```
++ 클래스 단위에서 공통 캐시 이름, 키 생성 정책 지정
+  + **@CacheConfig**
+  + ```java
+    @Service
+    @CacheConfig(cacheNames = "products")
+    public class ProductService {...}
+    ```
++ SpEL 사용 가능.
+  + SpEL 활용하여 캐시 키를 동적으로 지정 가능
+ 
+> 캐시 적용 고려 사항
+>> 1. 자주 조회되지만 자주 변경되지 않는 데이터에 효과적 \
+>> 2. 캐시의 용량 관리 및 TTL 설정 \
+>>> 일정 수준 이후에는 캐시 크기를 키워도 효과가 미미
+
 
 #### 로컬 캐시와 분산 캐시의 개념 차이와 각각의 장단점, 그리고 실무에서 어떤 기준으로 선택해야 하는지 설명해주세요.
 + 로컬 캐시
