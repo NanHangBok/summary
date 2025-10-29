@@ -1328,12 +1328,13 @@
     - 패킷에 대한 응답을 해야하기 때문에(시간 지연, CPU 소모) 성능이 낮다
     - streaming 서비스에 불리하다(손실된 경우 재전송 요청을 하므로)
    
-  > 3-way handshaking / 4-way handshaking
-  >> 3-way Handshaking
-  >>> 연결을 시작할 때 사용되며, 클라이언트와 서버 간에 SYN, SYN-ACK, ACK 패킷을 교환하여 연결을 확립
-  >> 4-way Handshaking
-  >>> 연결을 종료할 때 사용되며, FIN, ACK, FIN, ACK 패킷을 교환하여 연결을 종료 \
-  >>> 이 과정을 통해 양쪽 모두 데이터 전송이 완료되었음을 확인하고, 연결을 안전하게 종료할 수 있기 때문
+  - 3-way handshaking / 4-way handshaking
+  > 3-way Handshaking
+  >> 연결을 시작할 때 사용되며, 클라이언트와 서버 간에 SYN, SYN-ACK, ACK 패킷을 교환하여 연결을 확립
+  
+  > 4-way Handshaking
+  >> 연결을 종료할 때 사용되며, FIN, ACK, FIN, ACK 패킷을 교환하여 연결을 종료 \
+  >> 이 과정을 통해 양쪽 모두 데이터 전송이 완료되었음을 확인하고, 연결을 안전하게 종료할 수 있기 때문
   
 - **UDP - 사용자 데이터그램 프로토콜**
   - 데이터그램 방식을 사용하는 프로토콜. 각각의 패킷 간의 순서가 존재하지 않는 독립적인 패킷을 사용
